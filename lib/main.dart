@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'screens/home_screen.dart';
+import 'routes/app_routes.dart';
 import 'utils/app_theme.dart';
 
 void main() {
@@ -14,12 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
-      title: 'Mini Catalog',
-
       theme: AppTheme.lightTheme,
-
-      home: const HomeScreen(),
+      initialRoute: '/',
+      routes: AppRoutes.routes,
     );
   }
 }

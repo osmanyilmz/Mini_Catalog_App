@@ -18,8 +18,18 @@ class Product {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      price: json['price'].toDouble(),
+      price: (json['price'] as num).toDouble(),
       image: json['image'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'price': price,
+      'image': image,
+    };
   }
 }

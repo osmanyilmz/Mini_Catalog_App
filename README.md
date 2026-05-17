@@ -1,17 +1,40 @@
-# mini_catalog_app
+# Mini Catalog App
 
-A new Flutter project.
+A simple Flutter catalog application developed for Flutter daily training project.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🎯 Project Purpose
 
-A few resources to get you started if this is your first Flutter project:
+This project was developed to learn Flutter fundamentals including widget structure, navigation, state management, JSON modeling, and UI development.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📱 Features
+
+- Product listing with GridView
+- Product detail page
+- Cart system
+- Search and filtering
+- JSON model structure
+- Named Routes navigation
+- Responsive UI
+- Asset image usage
+- Stateful widget management
+
+---
+
+## 🛠 Technologies
+
+- Flutter
+- Dart
+- Material Design
+
+---
+
+## 📦 Flutter Version
+
+```bash
+Flutter 3.41.9 • channel stable
+Dart 3.11.5
+DevTools 2.54.2

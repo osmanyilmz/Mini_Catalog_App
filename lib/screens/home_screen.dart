@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../data/products_data.dart';
 import '../models/product_model.dart';
+import '../data/api_service.dart';
 import '../widgets/product_card.dart';
 import 'detail_screen.dart';
+import 'cart_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,97 +13,125 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int cartCount = 0;
+  List<Product> products = [];
+  List<Product> cartItems = [];
+  String searchQuery = "";
 
-  late List<Product> products;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    loadProducts();
+  }
 
-    products = productsJson.map((json) => Product.fromJson(json)).toList();
+  Future<void> loadProducts() async {
+    final data = await ApiService.fetchProducts();
+
+    setState(() {
+      products = data;
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final filteredProducts = products.where((p) {
+      return p.title.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mini Catalog"),
 
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-
-            child: Badge(
-              label: Text(cartCount.toString()),
-
+          IconButton(
+            icon: Badge(
+              label: Text(cartItems.length.toString()),
               child: const Icon(Icons.shopping_cart),
             ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CartScreen(items: cartItems)),
+              );
+            },
           ),
         ],
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(12),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(12),
 
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Search product",
-                prefixIcon: const Icon(Icons.search),
-
-                filled: true,
-                fillColor: Colors.white,
-
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            Expanded(
-              child: GridView.builder(
-                itemCount: products.length,
-
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.7,
-                ),
-
-                itemBuilder: (context, index) {
-                  final product = products[index];
-
-                  return ProductCard(
-                    product: product,
-
-                    onTap: () async {
-                      final result = await Navigator.push(
-                        context,
-
-                        MaterialPageRoute(
-                          builder: (_) => DetailScreen(product: product),
-                        ),
-                      );
-
-                      if (result == true) {
-                        setState(() {
-                          cartCount++;
-                        });
-                      }
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
                     },
-                  );
-                },
+                    decoration: const InputDecoration(
+                      hintText: "Search product",
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+
+                    child: Image.network(
+                      "https://wantapi.com/assets/banner.png",
+                      width: double.infinity,
+                      height: 150,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount: filteredProducts.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+
+                      itemBuilder: (context, index) {
+                        final product = filteredProducts[index];
+
+                        return ProductCard(
+                          product: product,
+
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => DetailScreen(product: product),
+                              ),
+                            );
+
+                            if (result == true) {
+                              setState(() {
+                                cartItems.add(product);
+                              });
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
