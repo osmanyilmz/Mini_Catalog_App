@@ -85,5 +85,3 @@ flutter emulators --launch Pixel_6
 ```bash
 flutter run
 ```
-
-> Make sure Flutter SDK and Android Studio or VS Code are properly installed before running the project.
